@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>artikelbezeichnung</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+            --bg: #f5f7fb;
+            --fg: #1f2933;
+            --accent: #2563eb;
+            --border: #d0d7e2;
+            font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #101827;
+                --fg: #e2e8f0;
+                --accent: #60a5fa;
+                --border: #1f2937;
+            }
+        }
+
+        body {
+            margin: 0;
+            padding: 1.5rem;
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--fg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: min(640px, 100%);
+            padding: 3rem clamp(1.5rem, 2.5vw, 3rem);
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(6px);
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+            border: 1px solid var(--border);
+        }
+
+        details.panel {
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.25rem 1.5rem;
+        }
+
+        details.panel + details.panel {
+            margin-top: 2rem;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            details.panel {
+                background: rgba(15, 23, 42, 0.72);
+            }
+        }
+
+        details.panel summary {
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 600;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0;
+        }
+
+        details.panel summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .panel-toggle-icon {
+            font-size: 1.1rem;
+            transition: transform 180ms ease;
+        }
+
+        details.panel[open] .panel-toggle-icon {
+            transform: rotate(90deg);
+        }
+
+        .panel-content {
+            margin-top: 1.2rem;
+        }
+
+        .panel-title {
+            text-transform: lowercase;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .container {
+                background: rgba(15, 23, 42, 0.72);
+                box-shadow: 0 18px 36px rgba(2, 6, 23, 0.6);
+            }
+        }
+
+        h1 {
+            margin: 0 0 1.25rem;
+            font-size: clamp(1.6rem, 2.2vw, 2rem);
+            font-weight: 600;
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        label {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        input[type="search"] {
+            flex: 1;
+            padding: 0.9rem 1.1rem;
+            font-size: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 0.9rem;
+            outline: none;
+            transition: border-color 180ms ease, box-shadow 180ms ease;
+            background-color: rgba(255, 255, 255, 0.92);
+            color: inherit;
+        }
+
+        .travel-form {
+            display: grid;
+            grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.65fr);
+            gap: 0.2rem;
+            align-items: center;
+        }
+
+        .travel-form input[type="search"],
+        .travel-form input[type="date"] {
+            width: 100%;
+            padding: 0.38rem 0.65rem;
+            font-size: 0.8rem;
+            line-height: 1.2;
+            border: 1px solid var(--border);
+            border-radius: 0.45rem;
+            outline: none;
+            transition: border-color 180ms ease, box-shadow 180ms ease;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: inherit;
+        }
+
+        @media (max-width: 540px) {
+            .travel-form {
+                grid-template-columns: 1fr;
+                gap: 0.18rem;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            input[type="search"] {
+                background-color: rgba(15, 23, 42, 0.72);
+            }
+
+            .travel-form input[type="search"],
+            .travel-form input[type="date"] {
+                background-color: rgba(15, 23, 42, 0.72);
+            }
+        }
+
+        input[type="search"]:focus,
+        .travel-form input[type="search"]:focus,
+        .travel-form input[type="date"]:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+        }
+
+        .results {
+            margin-top: 1.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .result-card {
+            padding: 1rem 1.2rem;
+            border: 1px solid var(--border);
+            border-radius: 0.9rem;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            transition: transform 160ms ease, box-shadow 160ms ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .result-card {
+                background: rgba(15, 23, 42, 0.72);
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+            }
+        }
+
+        .result-card span {
+            font-size: 0.9rem;
+            opacity: 0.82;
+        }
+
+        .result-card a {
+            color: var(--accent);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .result-card a:hover {
+            text-decoration: underline;
+        }
+
+        .hint {
+            margin-top: 0.75rem;
+            font-size: 0.9rem;
+            opacity: 0.78;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <details class="panel" open>
+            <summary><span class="panel-toggle-icon">&gt;</span><span class="panel-title">artikelbezeichnung</span></summary>
+            <div class="panel-content">
+                <form id="search-form" autocomplete="off">
+                    <label for="product-query">Artikelbezeichnung eingeben</label>
+                    <input id="product-query" type="search" name="q" placeholder="Artikelbezeichnung" required>
+                </form>
+                <div id="search-results" class="results" aria-live="polite"></div>
+            </div>
+        </details>
+
+        <details class="panel">
+            <summary><span class="panel-toggle-icon">&gt;</span><span class="panel-title">reisen</span></summary>
+            <div class="panel-content" id="reisen-content">
+                <form id="travel-form" class="travel-form" autocomplete="off">
+                    <input id="travel-destination" type="search" name="destination" placeholder="Reiseziel" aria-label="Reiseziel" required>
+                    <input id="travel-date" type="date" name="date" aria-label="Reisedatum">
+                </form>
+                <div id="travel-results" class="results" aria-live="polite"></div>
+            </div>
+        </details>
+    </div>
+
+    <script>
+        // Trage hier deinen SerpAPI-Schlüssel ein, um Live-Suchergebnisse abzurufen.
+        const SERP_API_KEY = "a9bfabe39ff94272a8da38d7adbb13e16926a55b86e2777d17a1a9ede336cc1e";
+        const CORS_PROXY = "https://corsproxy.io/?"; // Eingesetzt als Fallback, falls direkte Requests scheitern.
+
+        // Definiert, welche Quellen für Artikel abgefragt werden.
+        const ARTICLE_SOURCES = [
+            {
+                name: "Kleinanzeigen",
+                engine: "google",
+                query: query => `${query} site:kleinanzeigen.de inurl:s-anzeige`,
+                limit: 20,
+                pageSize: 10,
+                maxRequests: 6
+            },
+            {
+                name: "Vinted",
+                engine: "google",
+                query: query => `${query} site:vinted.de inurl:/items/`,
+                limit: 20,
+                pageSize: 10,
+                maxRequests: 6
+            }
+        ];
+
+        // Reiseplattformen, die nach Ziel und Datum durchsucht werden.
+        const computeDateRange = (value, nights = 3) => {
+            if (!value) {
+                return {};
+            }
+
+            const start = new Date(value);
+
+            if (Number.isNaN(start.getTime())) {
+                return {};
+            }
+
+            const end = new Date(start);
+            end.setDate(end.getDate() + Math.max(1, nights));
+
+            const toISO = input => input.toISOString().slice(0, 10);
+
+            return {
+                checkin: toISO(start),
+                checkout: toISO(end)
+            };
+        };
+
+        const buildBookingFallbackLink = ({ destination, date }) => {
+            if (!destination) {
+                return null;
+            }
+
+            const range = computeDateRange(date, 3);
+            const params = new URLSearchParams({
+                ss: destination.trim(),
+                group_adults: "2",
+                no_rooms: "1",
+                group_children: "0"
+            });
+
+            if (range.checkin) {
+                params.set("checkin", range.checkin);
+            }
+
+            if (range.checkout) {
+                params.set("checkout", range.checkout);
+            }
+
+            return `https://www.booking.com/searchresults.html?${params.toString()}`;
+        };
+
+        const buildAirbnbFallbackLink = ({ destination, date }) => {
+            if (!destination) {
+                return null;
+            }
+
+            const range = computeDateRange(date, 3);
+            const slug = destination.trim().toLowerCase().replace(/\s+/g, "-");
+            const params = new URLSearchParams({
+                adults: "2"
+            });
+
+            if (range.checkin) {
+                params.set("checkin", range.checkin);
+            }
+
+            if (range.checkout) {
+                params.set("checkout", range.checkout);
+            }
+
+            return `https://www.airbnb.de/s/${encodeURIComponent(slug)}/homes?${params.toString()}`;
+        };
+
+        const toInurl = value => {
+            if (!value) {
+                return null;
+            }
+
+            const trimmed = value.trim();
+            if (!trimmed) {
+                return null;
+            }
+
+            const isNegative = trimmed.startsWith("-");
+            const content = isNegative ? trimmed.slice(1) : trimmed;
+            const formatted = content.startsWith("inurl:") ? content : `inurl:${content}`;
+
+            return isNegative ? `-${formatted}` : formatted;
+        };
+
+        const computeDestinationSynonyms = normalizedLower => {
+            const synonyms = [];
+
+            if (normalizedLower.includes("scheveningen")) {
+                synonyms.push(
+                    "Den Haag",
+                    "The Hague",
+                    "Den Haag Strand",
+                    "Holland Küste",
+                    "Holland Strand",
+                    "Nordsee Scheveningen",
+                    "Zuid-Holland"
+                );
+            }
+
+            if (normalizedLower.includes("den haag") || normalizedLower.includes("the hague")) {
+                synonyms.push(
+                    "Scheveningen",
+                    "Scheveningen Strand",
+                    "Nordsee Den Haag"
+                );
+            }
+
+            if (normalizedLower.includes("nordsee")) {
+                synonyms.push("Nordseeküste", "Nordsee Strandhotels");
+            }
+
+            return synonyms;
+        };
+
+        const buildTravelQuery = (domains, extraTerms = [], options = {}) => ({ destination, date }) => {
+            if (!destination) {
+                return [];
+            }
+
+            const normalizedDestination = destination.trim().replace(/\s+/g, " ");
+            if (!normalizedDestination) {
+                return [];
+            }
+
+            const normalizedLower = normalizedDestination.toLowerCase();
+            const domainList = (Array.isArray(domains) ? domains : [domains]).filter(Boolean);
+            const suffixTerms = new Set(Array.isArray(extraTerms) ? extraTerms.filter(Boolean) : [extraTerms].filter(Boolean));
+
+            if (!suffixTerms.size) {
+                suffixTerms.add("Hotel");
+                suffixTerms.add("Unterkunft");
+            }
+
+            const appendTerms = new Set(Array.isArray(options.appendTerms) ? options.appendTerms.filter(Boolean) : [options.appendTerms].filter(Boolean));
+            const qualifierTerms = new Set(Array.isArray(options.synonyms) ? options.synonyms.filter(Boolean) : [options.synonyms].filter(Boolean));
+            const regionalTerms = computeDestinationSynonyms(normalizedLower);
+            const regionalLookup = new Set(
+                regionalTerms
+                    .map(term => term ? term.toLowerCase().replace(/\s+/g, " ") : null)
+                    .filter(Boolean)
+            );
+            regionalTerms.forEach(term => {
+                if (term) {
+                    qualifierTerms.add(term);
+                }
+            });
+
+            const baseTargets = new Set([normalizedDestination]);
+            normalizedDestination
+                .split(/[\s,\-\/]+/)
+                .map(segment => segment.trim())
+                .filter(segment => segment.length > 3)
+                .forEach(segment => baseTargets.add(segment));
+
+            regionalTerms.forEach(term => {
+                if (term) {
+                    baseTargets.add(term);
+                }
+            });
+
+            const filters = [];
+
+            if (domainList.length) {
+                const domainTokens = domainList.map(entry => `site:${entry}`);
+                filters.push(domainTokens.length > 1 ? `(${domainTokens.join(" OR ")})` : domainTokens[0]);
+            }
+
+            const appendFilter = value => {
+                if (!value) {
+                    return;
+                }
+
+                if (Array.isArray(value)) {
+                    value.filter(Boolean).forEach(entry => filters.push(entry));
+                } else {
+                    filters.push(value);
+                }
+            };
+
+            const appendPathFilter = value => {
+                if (!value) {
+                    return;
+                }
+
+                if (Array.isArray(value)) {
+                    value.map(toInurl).filter(Boolean).forEach(entry => filters.push(entry));
+                } else {
+                    const formatted = toInurl(value);
+                    if (formatted) {
+                        filters.push(formatted);
+                    }
+                }
+            };
+
+            appendPathFilter(options.pathFilter);
+            appendFilter(options.extraFilter);
+
+            const filterSegment = filters.filter(Boolean).join(" ");
+            const withFilters = base => filterSegment ? `${base} ${filterSegment}`.trim() : base;
+
+            const phrases = new Set();
+            const registerPhrase = value => {
+                if (!value) {
+                    return;
+                }
+
+                const trimmed = value.trim();
+                if (trimmed) {
+                    phrases.add(trimmed);
+                }
+            };
+
+            const monthTokens = (() => {
+                if (!date) {
+                    return [];
+                }
+
+                const parsed = new Date(date);
+
+                if (Number.isNaN(parsed.getTime())) {
+                    return [];
+                }
+
+                const monthName = parsed.toLocaleDateString("de-DE", { month: "long", year: "numeric" });
+                return [date, monthName];
+            })();
+
+            const buildPhrasesForBase = base => {
+                if (!base) {
+                    return;
+                }
+
+                const cleanBase = base.replace(/\s+/g, " ").trim();
+                if (!cleanBase) {
+                    return;
+                }
+
+                const quotedBase = cleanBase.includes("\"") ? cleanBase : `"${cleanBase}"`;
+                registerPhrase(quotedBase);
+
+                const lowerBase = cleanBase.toLowerCase();
+                const isPrimaryTarget = lowerBase === normalizedLower;
+                const isRegionalTarget = regionalLookup.has(lowerBase);
+                const allowSuffixes = isPrimaryTarget || isRegionalTarget;
+                const allowAppendTerms = isPrimaryTarget || isRegionalTarget;
+                const allowQualifiers = isPrimaryTarget;
+                const allowMonthTokens = isPrimaryTarget || isRegionalTarget;
+
+                if (allowSuffixes) {
+                    suffixTerms.forEach(suffix => {
+                        registerPhrase(`"${cleanBase} ${suffix}"`);
+                    });
+                } else {
+                    const [firstSuffix] = suffixTerms;
+                    if (firstSuffix) {
+                        registerPhrase(`"${cleanBase} ${firstSuffix}"`);
+                    }
+                }
+
+                if (allowAppendTerms) {
+                    appendTerms.forEach(term => {
+                        registerPhrase(`"${cleanBase} ${term}"`);
+                    });
+                }
+
+                if (allowQualifiers) {
+                    qualifierTerms.forEach(qualifier => {
+                        if (!qualifier) {
+                            return;
+                        }
+
+                        const cleanQualifier = qualifier.replace(/\s+/g, " ").trim();
+                        if (!cleanQualifier) {
+                            return;
+                        }
+
+                        if (cleanQualifier.toLowerCase() === lowerBase) {
+                            return;
+                        }
+
+                        registerPhrase(`"${cleanBase} ${cleanQualifier}"`);
+                        suffixTerms.forEach(suffix => {
+                            registerPhrase(`"${cleanBase} ${cleanQualifier} ${suffix}"`);
+                        });
+                    });
+                }
+
+                if (allowMonthTokens) {
+                    monthTokens.forEach(token => {
+                        registerPhrase(`"${cleanBase} ${token}"`);
+                        suffixTerms.forEach(suffix => {
+                            registerPhrase(`"${cleanBase} ${suffix} ${token}"`);
+                        });
+                    });
+                }
+            };
+
+            baseTargets.forEach(buildPhrasesForBase);
+
+            const queries = new Set();
+
+            phrases.forEach(phrase => {
+                queries.add(withFilters(phrase));
+
+                if (options.extraVariants?.length) {
+                    options.extraVariants.forEach(variant => {
+                        const extended = `${phrase} ${variant}`.trim();
+                        queries.add(withFilters(extended));
+                    });
+                }
+            });
+
+            baseTargets.forEach(target => {
+                const cleanTarget = target.replace(/\s+/g, " ").trim();
+                if (!cleanTarget) {
+                    return;
+                }
+
+                const intitlePhrase = `intitle:"${cleanTarget}" "${cleanTarget} Hotel"`;
+                queries.add(withFilters(intitlePhrase));
+            });
+
+            if (options.localeVariants !== false) {
+                const needsLocale = !/niederlande|netherlands/.test(normalizedLower);
+                if (needsLocale) {
+                    phrases.forEach(phrase => {
+                        queries.add(withFilters(`${phrase} Niederlande`));
+                        queries.add(withFilters(`${phrase} Netherlands`));
+                    });
+                }
+            }
+
+            if (options.loosenFilter !== false && filterSegment) {
+                phrases.forEach(phrase => queries.add(phrase));
+            }
+
+            const variants = Array.from(queries).filter(Boolean);
+            const maxVariants = typeof options.maxQueryVariants === "number" && options.maxQueryVariants > 0
+                ? options.maxQueryVariants
+                : 60;
+
+            return variants.slice(0, Math.min(maxVariants, variants.length));
+        };
+
+        const buildSimpleAccommodationQuery = (domains = []) => ({ destination, date }) => {
+            if (!destination) {
+                return [];
+            }
+
+            const normalizedDestination = destination.trim().replace(/\s+/g, " ");
+
+            if (!normalizedDestination) {
+                return [];
+            }
+
+            const normalizedLower = normalizedDestination.toLowerCase();
+            const domainList = domains.filter(Boolean);
+
+            const variantTokens = new Set([
+                `${normalizedDestination} Unterkunft`,
+                `${normalizedDestination} Hotel`,
+                `${normalizedDestination} Hotels`,
+                `${normalizedDestination} Ferienwohnung`,
+                `${normalizedDestination} Übernachtung`
+            ]);
+
+            if (!/(hotel|unterkunft|ferien)/.test(normalizedLower)) {
+                variantTokens.add(`"${normalizedDestination}"`);
+            }
+
+            const baseTokens = Array.from(variantTokens);
+
+            const dateTokens = (() => {
+                if (!date) {
+                    return [];
+                }
+
+                const parsed = new Date(date);
+
+                if (Number.isNaN(parsed.getTime())) {
+                    return [date];
+                }
+
+                const monthName = parsed.toLocaleDateString("de-DE", { month: "long", year: "numeric" });
+                return [date, monthName];
+            })();
+
+            const additionalDomains = ["expedia.de", "hrs.de", "kayak.de", "trivago.de", "holidaycheck.de"];
+            additionalDomains.forEach(domain => domainList.push(domain));
+
+            const domainClause = domainList.length
+                ? `(${domainList.map(domain => `site:${domain}`).join(" OR ")})`
+                : "";
+
+            const domainVariants = domainList.length
+                ? [`(${domainList.map(domain => `site:${domain}`).join(" OR ")})`, ""]
+                : [""];
+
+            const queries = new Set();
+
+            baseTokens.forEach(base => {
+                const quotedBase = base.includes("\"") ? base : `"${base}"`;
+
+                domainVariants.forEach(domainVariant => {
+                    if (dateTokens.length) {
+                        dateTokens.forEach(dateToken => {
+                            queries.add([quotedBase, dateToken, domainVariant].filter(Boolean).join(" "));
+                        });
+                    }
+
+                    queries.add([quotedBase, "buchen", domainVariant].filter(Boolean).join(" "));
+                    queries.add([quotedBase, "Bewertungen", domainVariant].filter(Boolean).join(" "));
+                    queries.add([quotedBase, domainVariant].filter(Boolean).join(" "));
+                });
+            });
+
+            queries.add([
+                normalizedDestination,
+                "Unterkünfte",
+                dateTokens[0] ?? "",
+                domainClause
+            ].filter(Boolean).join(" "));
+
+            queries.add([
+                normalizedDestination,
+                "Hotelangebote",
+                dateTokens[0] ?? "",
+                domainClause
+            ].filter(Boolean).join(" "));
+
+            queries.add([
+                normalizedDestination,
+                "Ferienwohnungen",
+                dateTokens[0] ?? "",
+                domainClause
+            ].filter(Boolean).join(" "));
+
+            return Array.from(queries).filter(Boolean);
+        };
+
+        const TRAVEL_SOURCES = [
+            {
+                name: "Unterkünfte",
+                engine: "google",
+                query: buildSimpleAccommodationQuery(["booking.com", "airbnb.de", "airbnb.com"]),
+                limit: 60,
+                pageSize: 10,
+                maxRequests: 6,
+                allowBroadLinks: true
+            }
+        ];
+
+        const form = document.getElementById("search-form");
+        const input = document.getElementById("product-query");
+        const articleResults = document.getElementById("search-results");
+        const travelForm = document.getElementById("travel-form");
+        const travelDestination = document.getElementById("travel-destination");
+        const travelDate = document.getElementById("travel-date");
+        const travelResults = document.getElementById("travel-results");
+
+        const clearContainer = container => {
+            container.innerHTML = "";
+            container.hidden = true;
+        };
+
+        const renderMessage = (container, title, body) => {
+            const card = document.createElement("div");
+            card.className = "result-card";
+            card.innerHTML = `<strong>${title}</strong><span>${body}</span>`;
+            container.appendChild(card);
+        };
+
+        const isDirectProductLink = url => {
+            try {
+                const parsed = new URL(url);
+                const host = parsed.hostname;
+                const path = parsed.pathname;
+
+                if (host.includes("kleinanzeigen.de")) {
+                    return /\/s-anzeige\//.test(path) || parsed.searchParams.has("adId");
+                }
+
+                if (/vinted\./.test(host)) {
+                    return /\/items\//.test(path) || /\/wardrobe\//.test(path);
+                }
+
+                if (host.includes("booking.com")) {
+                    const lowerPath = path.toLowerCase();
+                    if (/(hotel|stay|city|searchresults)/.test(lowerPath)) {
+                        return true;
+                    }
+
+                    return /hotel.*\.html$/i.test(lowerPath) || /searchresults.*\.html$/i.test(lowerPath);
+                }
+
+                if (/airbnb\./.test(host)) {
+                    return /\/(rooms|s)\//.test(path);
+                }
+
+                return true;
+            } catch (error) {
+                return false;
+            }
+        };
+
+        const resolveLink = url => {
+            try {
+                const parsed = new URL(url);
+                const isGoogleDomain = /(^|\.)google\./i.test(parsed.hostname) || parsed.hostname.includes("googleadservices");
+
+                if (isGoogleDomain) {
+                    const redirectKeys = ["q", "url", "adurl", "dest", "u"];
+
+                    for (const key of redirectKeys) {
+                        const candidate = parsed.searchParams.get(key);
+                        if (candidate) {
+                            try {
+                                return decodeURIComponent(candidate);
+                            } catch (decodeError) {
+                                return candidate;
+                            }
+                        }
+                    }
+                }
+
+                return url;
+            } catch (error) {
+                return url;
+            }
+        };
+
+        const canonicalizeUrl = url => {
+            if (!url) {
+                return null;
+            }
+
+            try {
+                const parsed = new URL(url);
+                parsed.hash = "";
+                if (parsed.search) {
+                    const params = new URLSearchParams(parsed.search);
+                    const normalizedParams = new URLSearchParams();
+                    [...params.entries()]
+                        .sort(([aKey, aValue], [bKey, bValue]) => {
+                            if (aKey === bKey) {
+                                return String(aValue).localeCompare(String(bValue));
+                            }
+                            return aKey.localeCompare(bKey);
+                        })
+                        .forEach(([key, value]) => normalizedParams.append(key, value));
+                    const serialized = normalizedParams.toString();
+                    parsed.search = serialized ? `?${serialized}` : "";
+                }
+                parsed.pathname = parsed.pathname.replace(/\/+$/, "") || "/";
+                return parsed.toString();
+            } catch (error) {
+                return url.trim();
+            }
+        };
+
+        const deduplicateItemsByUrl = items => {
+            const seen = new Set();
+
+            return items.filter(item => {
+                if (!item?.url) {
+                    return false;
+                }
+
+                const normalized = canonicalizeUrl(item.url);
+
+                if (!normalized || seen.has(normalized)) {
+                    return false;
+                }
+
+                seen.add(normalized);
+                item.url = normalized;
+                return true;
+            });
+        };
+
+        const serializeParams = params => {
+            const search = new URLSearchParams(params);
+            return search.toString();
+        };
+
+        const parsePriceValue = value => {
+            if (!value) {
+                return null;
+            }
+
+            const normalized = value
+                .toString()
+                .replace(/[^0-9.,]/g, "");
+
+            if (!normalized) {
+                return null;
+            }
+
+            const hasComma = normalized.includes(",");
+            const hasDot = normalized.includes(".");
+            let sanitized = normalized;
+
+            if (hasComma && hasDot) {
+                const lastComma = normalized.lastIndexOf(",");
+                const lastDot = normalized.lastIndexOf(".");
+
+                if (lastComma > lastDot) {
+                    sanitized = normalized.replace(/\./g, "").replace(",", ".");
+                } else {
+                    sanitized = normalized.replace(/,/g, "");
+                }
+            } else if (hasComma) {
+                sanitized = normalized.replace(/\./g, "").replace(",", ".");
+            } else if (hasDot) {
+                const firstDot = normalized.indexOf(".");
+                const lastDot = normalized.lastIndexOf(".");
+                if (firstDot !== lastDot) {
+                    sanitized = normalized.replace(/\./g, "");
+                }
+            }
+
+            const parsed = Number.parseFloat(sanitized);
+            return Number.isFinite(parsed) ? parsed : null;
+        };
+
+        const EURO_FORMATTER = new Intl.NumberFormat("de-DE", {
+            style: "currency",
+            currency: "EUR"
+        });
+
+        const formatEuro = value => {
+            if (!Number.isFinite(value)) {
+                return null;
+            }
+
+            return EURO_FORMATTER.format(value);
+        };
+
+        const extractPrice = text => {
+            if (!text) {
+                return null;
+            }
+
+            const match = text.match(/(\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?)/);
+
+            if (!match) {
+                return null;
+            }
+
+            const parsed = parsePriceValue(match[1]);
+            return parsed !== null ? formatEuro(parsed) : null;
+        };
+
+        const mapShoppingResults = (payload, source) => {
+            const candidates = (payload.shopping_results ?? []).filter(item => {
+                if (typeof source.filter === "function") {
+                    return source.filter(item);
+                }
+                return true;
+            });
+
+            return candidates.slice(0, source.limit ?? 5).map(item => ({
+                title: item.title,
+                description: item.extracted_price ? `${item.extracted_price.toFixed(2)} €` : item.description ?? "",
+                price: item.price ?? (item.extracted_price ? `${item.extracted_price.toFixed(2)} €` : null),
+                url: item.link,
+                source: item.source ?? source.name
+            }));
+        };
+
+        const mapOrganicResults = (payload, source = {}) => {
+            const organic = payload.organic_results ?? [];
+            return organic.map(item => {
+                if (!item.link) {
+                    return null;
+                }
+
+                const directLink = resolveLink(item.link);
+
+                if (!directLink) {
+                    return null;
+                }
+
+                const allowBroadLinks = Boolean(source.allowBroadLinks);
+                const allowedHosts = Array.isArray(source.allowedHosts) ? source.allowedHosts : [];
+                const hostMatches = (() => {
+                    if (!allowedHosts.length) {
+                        return false;
+                    }
+
+                    try {
+                        const host = new URL(directLink).hostname;
+                        return allowedHosts.some(pattern => {
+                            if (typeof pattern === "string") {
+                                return host.includes(pattern);
+                            }
+
+                            if (pattern instanceof RegExp) {
+                                return pattern.test(host);
+                            }
+
+                            return false;
+                        });
+                    } catch (error) {
+                        return false;
+                    }
+                })();
+
+                if (!allowBroadLinks && !hostMatches && !isDirectProductLink(directLink)) {
+                    return null;
+                }
+
+                const price = item.price ?? extractPrice([item.snippet, ...(item.rich_snippet?.top?.extensions ?? [])].join(" "));
+                return {
+                    title: item.title,
+                    description: item.snippet ?? "",
+                    price,
+                    url: directLink,
+                    source: item.source ?? new URL(directLink).hostname.replace("www.", "")
+                };
+            }).filter(Boolean);
+        };
+
+        const fetchJson = async endpoint => {
+            try {
+                const response = await fetch(endpoint, { mode: "cors", referrerPolicy: "no-referrer" });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status} – ${response.statusText}`);
+                }
+
+                return await response.json();
+            } catch (error) {
+                const shouldRetryWithProxy = CORS_PROXY && (error instanceof TypeError || (typeof error.message === "string" && /NetworkError|Failed to fetch/i.test(error.message)));
+
+                if (!shouldRetryWithProxy) {
+                    throw error;
+                }
+
+                const proxyEndpoint = `${CORS_PROXY}${encodeURIComponent(endpoint)}`;
+                const response = await fetch(proxyEndpoint, { mode: "cors", referrerPolicy: "no-referrer" });
+
+                if (!response.ok) {
+                    throw new Error(`Proxy-Fehler ${response.status} – ${response.statusText}`);
+                }
+
+                return await response.json();
+            }
+        };
+
+        const fetchSourceResults = async (source, queryInput) => {
+            const limit = source.limit ?? 10;
+            const aggregated = [];
+            const maxRequests = source.maxRequests ?? 5;
+            const queries = (() => {
+                if (typeof source.query === "function") {
+                    const result = source.query(queryInput);
+                    if (Array.isArray(result)) {
+                        return result.filter(Boolean);
+                    }
+                    return result ? [result] : [];
+                }
+
+                if (Array.isArray(queryInput)) {
+                    return queryInput.filter(Boolean);
+                }
+
+                return queryInput ? [queryInput] : [];
+            })();
+
+            const usedQueries = [];
+
+            for (const queryString of queries) {
+                if (!queryString || aggregated.length >= limit) {
+                    break;
+                }
+
+                let page = 0;
+
+                while (aggregated.length < limit && page < maxRequests) {
+                    const params = {
+                        api_key: SERP_API_KEY,
+                        engine: source.engine,
+                        q: queryString,
+                        gl: "de",
+                        hl: "de"
+                    };
+
+                    if (source.engine === "google") {
+                        const remaining = limit - aggregated.length;
+                        const basePageSize = source.pageSize ?? 10;
+                        const pageSize = Math.min(remaining, basePageSize);
+                        params.num = pageSize;
+                        params.start = page * basePageSize;
+                        params.google_domain = "google.de";
+                        params.filter = "0";
+                    }
+
+                    if (source.engine === "google_shopping") {
+                        params.num = Math.min(limit, 100);
+                        params.start = page * limit;
+                        params.google_domain = "google.de";
+                    }
+
+                    const endpoint = `https://serpapi.com/search.json?${serializeParams(params)}`;
+                    const payload = await fetchJson(endpoint);
+                    const mapped = source.engine === "google_shopping"
+                        ? mapShoppingResults(payload, source)
+                        : mapOrganicResults(payload, source);
+
+                    const filtered = mapped.filter(Boolean);
+                    aggregated.push(...filtered);
+                    usedQueries.push(queryString);
+
+                    if (!filtered.length) {
+                        break;
+                    }
+
+                    if (filtered.length < (source.engine === "google" ? (source.pageSize ?? 10) : limit)) {
+                        break;
+                    }
+
+                    page += 1;
+                }
+            }
+
+            return {
+                items: aggregated.slice(0, limit),
+                metadata: {
+                    queriesTried: usedQueries
+                }
+            };
+        };
+
+    const executeSearch = async (queryInput, { container, sources, emptyTitle, emptyBody, selectItems, showFallbackLinks = true }) => {
+            clearContainer(container);
+
+            if (!SERP_API_KEY) {
+                renderMessage(container, "API-Schlüssel erforderlich", "Bitte trage deinen SerpAPI-Schlüssel in der Datei ein, um Live-Ergebnisse zu laden.");
+                container.hidden = false;
+                return;
+            }
+
+            renderMessage(container, "Suche läuft", "Bitte einen Moment Geduld, die Angebote werden geladen.");
+            container.hidden = false;
+
+            try {
+                const sourceMap = new Map(sources.map(source => [source.name, source]));
+
+                const tasks = sources.map(async source => {
+                    const result = await fetchSourceResults(source, queryInput);
+                    return { source: source.name, ...result };
+                });
+
+                const batches = await Promise.allSettled(tasks);
+
+                container.innerHTML = "";
+
+                const aggregatedItems = [];
+                const summaries = [];
+
+                batches.forEach(batch => {
+                    if (batch.status !== "fulfilled") {
+                        renderMessage(container, "Quelle nicht verfügbar", batch.reason?.message ?? "Unbekannter Fehler");
+                        return;
+                    }
+
+                    const { source: sourceName, items, metadata } = batch.value;
+                    const enriched = items
+                        .map(item => {
+                            const candidateUrl = item?.url ?? item?.link ?? "";
+                            const normalizedUrl = resolveLink(candidateUrl);
+
+                            if (!normalizedUrl) {
+                                return null;
+                            }
+
+                            return {
+                                ...item,
+                                url: normalizedUrl,
+                                source: sourceName
+                            };
+                        })
+                        .filter(Boolean);
+                    aggregatedItems.push(...enriched);
+                    summaries.push({
+                        sourceName,
+                        items: enriched,
+                        metadata,
+                        definition: sourceMap.get(sourceName)
+                    });
+                });
+
+                let itemsToRender = deduplicateItemsByUrl(aggregatedItems);
+
+                if (typeof selectItems === "function") {
+                    itemsToRender = selectItems(itemsToRender, queryInput) ?? [];
+                }
+
+                if (!itemsToRender.length) {
+                    renderMessage(container, emptyTitle, emptyBody);
+                } else {
+                    itemsToRender.forEach(item => {
+                        if (!item.url) {
+                            return;
+                        }
+
+                        const card = document.createElement("div");
+                        card.className = "result-card";
+
+                        const title = document.createElement("strong");
+                        title.textContent = item.title ?? "Unbenanntes Angebot";
+
+                        const description = document.createElement("span");
+                        description.textContent = item.description || "Keine Beschreibung verfügbar.";
+
+                        const meta = document.createElement("span");
+                        const price = item.price ? item.price : extractPrice(`${item.title ?? ""} ${item.description ?? ""}`);
+                        meta.textContent = [price, item.source].filter(Boolean).join(" • ");
+
+                        const link = document.createElement("a");
+                        link.href = resolveLink(item.url);
+                        link.textContent = "Zum Angebot";
+                        link.target = "_blank";
+                        link.rel = "noopener noreferrer";
+
+                        card.append(title, description, meta, link);
+                        container.appendChild(card);
+                    });
+                }
+
+                if (showFallbackLinks) {
+                    summaries
+                        .filter(summary => !summary.items.length && summary.definition?.buildFallbackLink)
+                        .forEach(summary => {
+                            const fallbackUrl = summary.definition.buildFallbackLink?.(queryInput);
+
+                            if (!fallbackUrl) {
+                                return;
+                            }
+
+                            const fallbackCard = document.createElement("div");
+                            fallbackCard.className = "result-card";
+
+                            const title = document.createElement("strong");
+                            title.textContent = `${summary.sourceName} – Direkt suchen`;
+
+                            const info = document.createElement("span");
+                            const queries = summary.metadata?.queriesTried ?? [];
+                            info.textContent = queries.length
+                                ? `Keine Treffer über SerpAPI. Versuchte Suchanfragen: ${queries.join(" | ")}`
+                                : "Keine Treffer über SerpAPI.";
+
+                            const link = document.createElement("a");
+                            link.href = fallbackUrl;
+                            link.textContent = `${summary.sourceName} öffnen`;
+                            link.target = "_blank";
+                            link.rel = "noopener noreferrer";
+
+                            fallbackCard.append(title, info, link);
+                            container.appendChild(fallbackCard);
+                        });
+                }
+            } catch (error) {
+                container.innerHTML = "";
+                renderMessage(container, "Fehler", error.message ?? "Die Suche konnte nicht abgeschlossen werden.");
+            }
+
+            container.hidden = false;
+        };
+
+        const renderArticleResults = query => executeSearch(query, {
+            container: articleResults,
+            sources: ARTICLE_SOURCES,
+            emptyTitle: "Keine Ergebnisse",
+            emptyBody: "Für den Suchbegriff wurden keine Angebote gefunden."
+        });
+
+        const selectTopTravelItems = (items, context = {}) => {
+            const normalizedDestination = (context.destination ?? "").toLowerCase();
+            const normalizedDateDigits = (context.date ?? "").replace(/\D/g, "");
+
+            const scored = items.map((item, index) => {
+                const description = item.description ?? "";
+                const title = item.title ?? "";
+
+                const destinationBoost = normalizedDestination && (
+                    title.toLowerCase().includes(normalizedDestination) ||
+                    description.toLowerCase().includes(normalizedDestination)
+                ) ? 1 : 0;
+
+                const dateBoost = normalizedDateDigits && description.replace(/\D/g, "").includes(normalizedDateDigits) ? 1 : 0;
+
+                const priceText = item.price ?? extractPrice(description);
+                const priceValue = parsePriceValue(priceText);
+
+                const normalizedItem = {
+                    ...item,
+                    price: item.price ?? (priceValue !== null ? formatEuro(priceValue) : item.price)
+                };
+
+                return {
+                    item: normalizedItem,
+                    priceValue,
+                    hasPrice: priceValue !== null,
+                    destinationBoost,
+                    dateBoost,
+                    index
+                };
+            });
+
+            scored.sort((a, b) => {
+                if (a.hasPrice && b.hasPrice && a.priceValue !== b.priceValue) {
+                    return a.priceValue - b.priceValue;
+                }
+
+                if (a.hasPrice !== b.hasPrice) {
+                    return a.hasPrice ? -1 : 1;
+                }
+
+                if (a.destinationBoost !== b.destinationBoost) {
+                    return b.destinationBoost - a.destinationBoost;
+                }
+
+                if (a.dateBoost !== b.dateBoost) {
+                    return b.dateBoost - a.dateBoost;
+                }
+
+                return a.index - b.index;
+            });
+
+            return scored.slice(0, 30).map(entry => entry.item);
+        };
+
+        const formatDateForQuery = value => {
+            if (!value) {
+                return "";
+            }
+
+            const parsed = new Date(value);
+
+            if (Number.isNaN(parsed.getTime())) {
+                return value;
+            }
+
+            return parsed.toLocaleDateString("de-DE", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            });
+        };
+
+        const renderTravelResults = ({ destination, date }) => {
+            const normalizedDestination = destination.trim();
+
+            if (!normalizedDestination) {
+                clearContainer(travelResults);
+                renderMessage(travelResults, "Hinweis", "Bitte ein Reiseziel eingeben.");
+                travelResults.hidden = false;
+                return;
+            }
+
+            const queryPayload = {
+                destination: normalizedDestination,
+                date: formatDateForQuery(date)
+            };
+
+            return executeSearch(queryPayload, {
+                container: travelResults,
+                sources: TRAVEL_SOURCES,
+                emptyTitle: "Keine Unterkünfte gefunden",
+                emptyBody: "Bitte die Suchkriterien anpassen oder ein anderes Datum wählen.",
+                selectItems: selectTopTravelItems,
+                showFallbackLinks: false
+            });
+        };
+
+        form.addEventListener("submit", event => {
+            event.preventDefault();
+            const query = input.value.trim();
+
+            if (!query) {
+                clearContainer(articleResults);
+                return;
+            }
+
+            renderArticleResults(query);
+        });
+
+        input.addEventListener("input", () => {
+            if (!input.value.trim()) {
+                clearContainer(articleResults);
+            }
+        });
+
+        if (travelForm) {
+            travelForm.addEventListener("submit", event => {
+                event.preventDefault();
+                renderTravelResults({
+                    destination: travelDestination.value,
+                    date: travelDate.value
+                });
+            });
+
+            travelDestination.addEventListener("input", () => {
+                if (!travelDestination.value.trim()) {
+                    clearContainer(travelResults);
+                }
+            });
+
+            travelDate.addEventListener("change", () => {
+                if (!travelDestination.value.trim()) {
+                    return;
+                }
+
+                renderTravelResults({
+                    destination: travelDestination.value,
+                    date: travelDate.value
+                });
+            });
+        }
+
+        clearContainer(articleResults);
+        if (travelResults) {
+            clearContainer(travelResults);
+        }
+    </script>
+</body>
+</html>
